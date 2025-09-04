@@ -10,7 +10,7 @@
       --bg:#f6f3f2;
       --panel:#ffffff;
       --accent:#6f836f;
-      --text:#43312c;
+      --text:#2a1e1a; /* más oscuro para mejor contraste */
       --muted:#b6a9a4;
       --border:#e7e1df;
     }
@@ -37,31 +37,33 @@
       box-shadow:0 10px 30px rgba(0,0,0,.08);
       padding:18px;
     }
-    /* ======= CABECERA (como la web de referencia): logo centrado + topbar con títulos a la izquierda y botón a la derecha ======= */
+    /* CABECERA: logo centrado + topbar con título a la izquierda y botón a la derecha */
     .head{ display:grid; justify-items:center; gap:6px; padding:12px 6px 16px }
     .brand{ display:grid; justify-items:center; gap:8px }
     .brand img{ height:clamp(72px, 12vw, 160px); width:auto; display:block; object-fit:contain }
     .topbar{ display:flex; justify-content:space-between; align-items:center; width:100%; gap:12px; flex-wrap:wrap }
-    .topbar .left{ display:grid; gap:4px; max-width:75% }
+    .topbar .left{ display:grid; gap:2px; max-width:75% }
     .topbar .right{ display:flex; align-items:center }
     h1{ color:var(--accent); font-size:clamp(1.2rem, 2.2vw + .6rem, 1.8rem); margin:0; letter-spacing:.2px }
     .muted{ color:var(--muted); font-size:.95rem }
-    /* ======= CONTENIDO ======= */
+    /* CONTENIDO */
     .scene{
       position:relative;
       margin-top:8px;
       border:1px solid var(--border);
       border-radius:14px;
-      background:#f7f2f0;
-      padding:22px;
-      min-height:140px;
+      background:#faf6f4;
+      padding:28px;
+      min-height:160px;
       display:grid;place-items:center;text-align:center;
     }
     .scene p{
       margin:0;
-      font-size:clamp(1.05rem, 1rem + .9vw, 1.6rem);
+      font-size:clamp(1.3rem, 1.1rem + 1.4vw, 2.1rem); /* más grande */
       line-height:1.45;
       letter-spacing:.2px;
+      color:var(--text); /* más oscuro */
+      font-weight:600;
     }
     .controls{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-top:14px }
     button, a.button{
@@ -89,7 +91,7 @@
       <div class="topbar">
         <div class="left">
           <h1>Escenas aleatorias</h1>
-          <div class="muted">Sin repetir por ciclo. Al completar todas, se barajan y empieza un nuevo ciclo.</div>
+          <!-- Subtítulo eliminado según petición -->
         </div>
         <div class="right">
           <button id="btnNext" class="primary" title="Mostrar otra escena">🔀 Otra escena</button>
@@ -106,7 +108,7 @@
       <button id="btnCopy" class="secondary" title="Copiar escena">Copiar escena</button>
       <div class="progress">
         <div class="pill" id="counter">0 / 7</div>
-        <div id="round">Ciclo 0</div>
+        <!-- Texto de ciclo eliminado -->
       </div>
     </div>
 
@@ -127,13 +129,11 @@
 
     const elText = document.getElementById("sceneText");
     const elCounter = document.getElementById("counter");
-    const elRound = document.getElementById("round");
     const btnNext = document.getElementById("btnNext");
     const btnRestart = document.getElementById("btnRestart");
     const btnCopy = document.getElementById("btnCopy");
 
     let queue = [];          // cola de índices barajados
-    let round = 0;           // número de ciclo
     let shownThisRound = 0;  // cuántas se han mostrado en el ciclo actual
 
     function shuffleInPlace(arr){
@@ -146,14 +146,12 @@
 
     function startNewRound(){
       queue = shuffleInPlace([...SCENES.keys()]);
-      round += 1;
       shownThisRound = 0;
       updateHud();
     }
 
     function updateHud(){
       elCounter.textContent = `${shownThisRound} / ${SCENES.length}`;
-      elRound.textContent = `Ciclo ${round}`;
     }
 
     function showNext(){
@@ -168,10 +166,10 @@
       void elText.offsetWidth; // reinicia animación
       elText.textContent = text;
       elText.classList.add("fade");
+      elText.classList.remove("muted"); // asegura color más oscuro tras empezar
     }
 
     function restart(){
-      round = 0;
       startNewRound();
       showNext();
     }
