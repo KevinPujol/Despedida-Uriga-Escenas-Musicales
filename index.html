@@ -8,12 +8,13 @@
   <link rel="icon" href="logo.png" type="image/png">
   <style>
     :root{
-      --bg:#ffffff;     /* fondo liso */
+      --bg:#ffffff;
       --panel:#ffffff;
-      --accent:#171717; /* logo y títulos oscuros */
+      --accent:#171717;
       --text:#171717;
       --muted:#7a7a7a;
       --border:#e7e1df;
+      --sceneText:#6f6a66; /* gris-beige suave, no muy oscuro */
     }
     *{box-sizing:border-box}
     html,body{height:100%}
@@ -50,14 +51,14 @@
       background:#fafafa;
       padding:18px;
       display:grid;
-      gap:12px;  /* texto encima de imagen */
+      gap:12px;
     }
     .scene-text{
       margin:0;
       font-size:clamp(1.25rem, 1.1rem + 1.4vw, 2rem);
       line-height:1.4;
       letter-spacing:.2px;
-      color:var(--text);
+      color:var(--sceneText); /* tono más suave */
       font-weight:700;
       text-align:center;
     }
@@ -96,7 +97,6 @@
   <main class="card">
     <div class="head">
       <div class="brand">
-        <!-- Logo oficial -->
         <img src="logo.png" alt="Olga &amp; Oriol – 04.10.2025" onerror="this.onerror=null; this.src='logo.jpg'">
       </div>
       <div class="topbar">
@@ -110,7 +110,6 @@
     </div>
 
     <section class="scene" aria-live="polite">
-      <!-- Texto de la escena ENCIMA -->
       <p id="sceneText" class="scene-text fade">Pulsa <strong>Otra escena</strong> para empezar 🔀</p>
       <div class="scene-media">
         <img id="sceneImg" src="" alt="" class="fade" />
@@ -129,7 +128,6 @@
   </main>
 
   <script>
-    // === Escenas con mapeo a imagen (nombres a subir) ===
     const SCENES = [
       { text: "Los padres de Uri pillan a Uri y a la secretaria en el despacho de abogados.",
         img: "padres-pillan-despacho.png",
@@ -224,7 +222,6 @@
       }
     });
 
-    // Pre-carga imágenes
     (function preload(){
       SCENES.forEach(s => { const im = new Image(); im.src = s.img; });
     })();
