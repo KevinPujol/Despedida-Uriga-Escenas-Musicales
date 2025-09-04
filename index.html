@@ -3,15 +3,16 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Escenas musicales</title>
+  <title>Olga &amp; Oriol — Escenas con imágenes</title>
   <meta name="description" content="Cada escena se muestra con su imagen correspondiente. Orden aleatorio sin repetir por ciclo." />
+  <link rel="icon" href="logo.png" type="image/png">
   <style>
     :root{
-      --bg:#f6f3f2;
+      --bg:#ffffff;     /* fondo liso, sin estampados */
       --panel:#ffffff;
-      --accent:#6f836f;
-      --text:#221712;
-      --muted:#9b8f8a;
+      --accent:#171717; /* logo oscuro */
+      --text:#171717;
+      --muted:#7a7a7a;
       --border:#e7e1df;
     }
     *{box-sizing:border-box}
@@ -19,10 +20,7 @@
     body{
       margin:0;
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans";
-      background:
-        radial-gradient(1000px 700px at 80% -20%, #f0ebe9 0%, transparent 60%),
-        radial-gradient(800px 600px at -10% 10%, #efe9e6 0%, transparent 60%),
-        var(--bg);
+      background: var(--bg);  /* sin degradados ni texturas */
       color:var(--text);
       display:grid;
       place-items:center;
@@ -30,15 +28,15 @@
     }
     .card{
       width:min(980px, 100%);
-      background: color-mix(in oklab, var(--panel) 86%, #faf6f4 14%);
+      background: var(--panel);
       border:1px solid var(--border);
       border-radius:20px;
       box-shadow:0 10px 30px rgba(0,0,0,.08);
       padding:18px;
     }
-    .head{ display:grid; justify-items:center; gap:6px; padding:12px 6px 16px }
+    .head{ display:grid; justify-items:center; gap:6px; padding:6px 6px 12px }
     .brand{ display:grid; justify-items:center; gap:8px }
-    .brand img{ height:clamp(72px, 12vw, 160px); width:auto; display:block; object-fit:contain }
+    .brand img{ height:clamp(84px, 12vw, 180px); width:auto; display:block; object-fit:contain }
     .topbar{ display:flex; justify-content:space-between; align-items:center; width:100%; gap:12px; flex-wrap:wrap }
     .topbar .left{ display:grid; gap:2px; max-width:75% }
     .topbar .right{ display:flex; align-items:center }
@@ -49,7 +47,7 @@
       margin-top:8px;
       border:1px solid var(--border);
       border-radius:14px;
-      background:#faf6f4;
+      background:#fafafa;  /* panel neutro */
       padding:18px;
       display:grid;
       gap:12px;
@@ -63,10 +61,7 @@
       font-weight:700;
       text-align:center;
     }
-    .scene-media{
-      display:grid;
-      place-items:center;
-    }
+    .scene-media{ display:grid; place-items:center; }
     .scene-media img{
       width:100%;
       height:auto;
@@ -84,9 +79,9 @@
       appearance:none; border:0; padding:var(--pad); border-radius:12px; cursor:pointer;
       font-weight:600; letter-spacing:.2px; display:inline-flex; align-items:center; gap:.55rem;
     }
-    .primary{ background:var(--accent); color:#fff }
-    .secondary{ background:#fff; color:var(--text); border:1px solid var(--border); box-shadow:0 1px 2px rgba(0,0,0,.06) }
-    .secondary:hover{ border-color: color-mix(in oklab, var(--border) 40%, var(--text) 60%); box-shadow:0 2px 6px rgba(0,0,0,.08); transform: translateY(-1px) }
+    .primary{ background:#111; color:#fff }
+    .secondary{ background:#fff; color:#111; border:1px solid var(--border); box-shadow:0 1px 2px rgba(0,0,0,.06) }
+    .secondary:hover{ border-color:#cfcfcf; box-shadow:0 2px 6px rgba(0,0,0,.08); transform: translateY(-1px) }
     .primary:hover{ filter:brightness(1.05) }
 
     .progress{ display:flex; gap:8px; align-items:center; margin-top:8px; color:var(--muted); font-size:.95rem }
@@ -101,6 +96,7 @@
   <main class="card">
     <div class="head">
       <div class="brand">
+        <!-- Logo oficial aportado -->
         <img src="logo.png" alt="Olga &amp; Oriol – 04.10.2025" onerror="this.onerror=null; this.src='logo.jpg'">
       </div>
       <div class="topbar">
@@ -132,7 +128,7 @@
   </main>
 
   <script>
-    // === Mapea cada escena con su imagen (ajusta nombres según subas los archivos) ===
+    // === Escenas con mapeo a imagen (nombres a subir) ===
     const SCENES = [
       { text: "Los padres de Uri pillan a Uri y a la secretaria en el despacho de abogados.",
         img: "padres-pillan-despacho.png",
@@ -227,7 +223,7 @@
       }
     });
 
-    // Pre-carga imágenes para evitar parpadeos
+    // Pre-carga imágenes
     (function preload(){
       SCENES.forEach(s => { const im = new Image(); im.src = s.img; });
     })();
