@@ -3,265 +3,234 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Generador de videos aleatorios</title>
-  <meta name="description" content="Página simple que muestra un video aleatorio de una lista (YouTube y TikTok)." />
+  <title>Olga &amp; Oriol — Escenas con imágenes</title>
+  <meta name="description" content="Cada escena se muestra con su imagen correspondiente. Orden aleatorio sin repetir por ciclo." />
+  <link rel="icon" href="logo.png" type="image/png">
   <style>
-    :root {
-      /* Paleta inspirada en la segunda imagen (web): fondos cálidos, texto oscuro y acento verde salvia */
-      --bg: #f6f3f2;        /* fondo principal muy claro, cálido */
-      --panel: #ffffff;     /* tarjetas/blancos */
-      --accent: #6f836f;    /* verde salvia para acentos y botones */
-      --text: #43312c;      /* marrón oscuro/charcoal cálido para texto */
-      --muted: #b6a9a4;     /* gris tostado para textos secundarios */
-      --border: #e7e1df;    /* borde suave */
+    :root{
+      --bg:#ffffff;     /* fondo liso */
+      --panel:#ffffff;
+      --accent:#171717; /* logo y títulos oscuros */
+      --text:#171717;
+      --muted:#7a7a7a;
+      --border:#e7e1df;
     }
-    * { box-sizing: border-box }
-    html, body { height: 100% }
-    body {
-      margin: 0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
-      background: radial-gradient(1000px 700px at 80% -20%, #f0ebe9 0%, transparent 60%),
-                  radial-gradient(800px 600px at -10% 10%, #efe9e6 0%, transparent 60%),
-                  var(--bg);
-      color: var(--text);
-      display: grid;
-      place-items: center;
-      padding: 24px;
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans";
+      background: var(--bg);
+      color:var(--text);
+      display:grid;
+      place-items:center;
+      padding:24px;
     }
-    .card {
-      width: min(960px, 100%);
-      background: color-mix(in oklab, var(--panel) 86%, #faf6f4 14%);
-      backdrop-filter: blur(6px) saturate(120%);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      box-shadow: 0 10px 30px rgba(0,0,0,.08);
-      padding: 18px;
+    .card{
+      width:min(980px, 100%);
+      background: var(--panel);
+      border:1px solid var(--border);
+      border-radius:20px;
+      box-shadow:0 10px 30px rgba(0,0,0,.08);
+      padding:18px;
     }
-    .head { display: grid; justify-items: center; gap: 6px; padding: 12px 6px 16px }
-    .brand { display: grid; justify-items: center; gap: 8px }
-    .brand img { height: clamp(72px, 12vw, 160px); width: auto; display: block; object-fit: contain; }
-    h1 { color: var(--accent); font-size: clamp(1.2rem, 2.2vw + .6rem, 1.8rem); margin: 0; letter-spacing: .2px }
-    .muted { color: var(--muted); font-size: .95rem }
+    .head{ display:grid; justify-items:center; gap:6px; padding:6px 6px 12px }
+    .brand{ display:grid; justify-items:center; gap:8px }
+    .brand img{ height:clamp(84px, 12vw, 180px); width:auto; display:block; object-fit:contain }
+    .topbar{ display:flex; justify-content:space-between; align-items:center; width:100%; gap:12px; flex-wrap:wrap }
+    .topbar .left{ display:grid; gap:2px; max-width:75% }
+    .topbar .right{ display:flex; align-items:center }
+    h1{ color:var(--accent); font-size:clamp(1.2rem, 2.2vw + .6rem, 1.8rem); margin:0; letter-spacing:.2px }
 
-    .player-wrap { position: relative; width: 100%; }
-    .ratio {
-      width: 100%;
-      aspect-ratio: 16 / 9;
-      background: #f1ecea;
-      border-radius: 14px;
-      overflow: hidden;
-      display: grid;
-      place-items: center;
-      border: 1px solid var(--border);
+    .scene{
+      position:relative;
+      margin-top:8px;
+      border:1px solid var(--border);
+      border-radius:14px;
+      background:#fafafa;
+      padding:18px;
+      display:grid;
+      gap:12px;  /* texto encima de imagen */
     }
-    iframe, .tiktok-embed { width: 100%; height: 100% }
-
-    .controls { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-top: 14px }
-    button, a.button {
-      --pad: 12px 16px;
-      appearance: none; border: 0; padding: var(--pad); border-radius: 12px; cursor: pointer;
-      font-weight: 600; letter-spacing: .2px; text-decoration: none; display: inline-flex; align-items: center; gap: .55rem;
+    .scene-text{
+      margin:0;
+      font-size:clamp(1.25rem, 1.1rem + 1.4vw, 2rem);
+      line-height:1.4;
+      letter-spacing:.2px;
+      color:var(--text);
+      font-weight:700;
+      text-align:center;
     }
-    .primary { background: var(--accent); color: #ffffff }
-    .secondary { background: #ffffff; color: var(--text); border: 1px solid var(--border); box-shadow: 0 1px 2px rgba(0,0,0,.06) }
-    .secondary:hover { border-color: color-mix(in oklab, var(--border) 40%, var(--text) 60%); box-shadow: 0 2px 6px rgba(0,0,0,.08); transform: translateY(-1px) }
-    .primary:hover { filter: brightness(1.05) }
+    .scene-media{ display:grid; place-items:center; }
+    .scene-media img{
+      width:100%;
+      height:auto;
+      border-radius:12px;
+      border:1px solid var(--border);
+      box-shadow:0 8px 18px rgba(0,0,0,.06);
+      max-height:66vh;
+      object-fit:contain;
+      background:#fff;
+    }
 
-    .info { display: grid; gap: 4px; margin-top: 6px }
-    .small { font-size: .9rem }
-    code.inline { background: #f0ecea; padding: 2px 6px; border-radius: 8px }
+    .controls{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-top:14px }
+    button{
+      --pad:12px 16px;
+      appearance:none; border:0; padding:var(--pad); border-radius:12px; cursor:pointer;
+      font-weight:600; letter-spacing:.2px; display:inline-flex; align-items:center; gap:.55rem;
+    }
+    .primary{ background:#111; color:#fff }
+    .secondary{ background:#fff; color:#111; border:1px solid var(--border); box-shadow:0 1px 2px rgba(0,0,0,.06) }
+    .secondary:hover{ border-color:#cfcfcf; box-shadow:0 2px 6px rgba(0,0,0,.08); transform: translateY(-1px) }
+    .primary:hover{ filter:brightness(1.05) }
 
-    .footer { margin-top: 12px; color: #8e837f; font-size: .85rem }
-    .footer a { color: inherit }
-    /* layout for title left / button right */
-    .topbar { display:flex; justify-content: space-between; align-items:center; width: 100%; gap: 12px; flex-wrap: wrap }
-    .topbar .left { display:grid; gap:4px; max-width: 75% }
-    .topbar .right { display:flex; align-items:center }
-    .brand { justify-self: center }
-    
+    .progress{ display:flex; gap:8px; align-items:center; margin-top:8px; color:var(--muted); font-size:.95rem }
+    .pill{ border:1px solid var(--border); padding:6px 10px; border-radius:999px; background:#fff }
+
+    .footer{ margin-top:12px; color:#8e837f; font-size:.85rem; text-align:center }
+    .fade{ animation:fade .28s ease-out both }
+    @keyframes fade{ from{ opacity:.2; transform: translateY(4px) } to { opacity:1; transform:none } }
   </style>
 </head>
 <body>
   <main class="card">
     <div class="head">
       <div class="brand">
-        <img src="logo.png" alt="Olga &amp; Oriol – 04.10.2025" />
+        <!-- Logo oficial -->
+        <img src="logo.png" alt="Olga &amp; Oriol – 04.10.2025" onerror="this.onerror=null; this.src='logo.jpg'">
       </div>
       <div class="topbar">
         <div class="left">
-          <h1>Generador de videos aleatorios</h1>
-          <div class="muted">Soporta Youtube (inc. Shorts).</div>
+          <h1>Escenas aleatorias</h1>
         </div>
         <div class="right">
-          <button id="shuffle" class="primary" title="Otro video">🔀 Otro video</button>
+          <button id="btnNext" class="primary" title="Mostrar otra escena">🔀 Otra escena</button>
         </div>
       </div>
     </div>
-    <div class="player-wrap">
-      <div id="player" class="ratio" aria-live="polite" aria-busy="false">
-        <div class="muted small">Pulsa <strong>Otro video</strong> para empezar 🔀</div>
+
+    <section class="scene" aria-live="polite">
+      <!-- Texto de la escena ENCIMA -->
+      <p id="sceneText" class="scene-text fade">Pulsa <strong>Otra escena</strong> para empezar 🔀</p>
+      <div class="scene-media">
+        <img id="sceneImg" src="" alt="" class="fade" />
+      </div>
+    </section>
+
+    <div class="controls">
+      <button id="btnRestart" class="secondary" title="Reiniciar ciclo">Reiniciar ciclo</button>
+      <button id="btnCopy" class="secondary" title="Copiar escena">Copiar escena</button>
+      <div class="progress">
+        <div class="pill" id="counter">0 / 7</div>
       </div>
     </div>
 
-    <div class="controls">
-      <a id="openOriginal" class="button secondary" href="#" target="_blank" rel="noopener" hidden>Abrir en su app</a>
-      <button id="copyLink" class="secondary" hidden>Copiar enlace</button>
-    </div>
-
-    <div class="info small" id="meta" hidden>
-      <div>Fuente: <code id="sourceHost" class="inline"></code></div>
-      <div>URL: <code id="sourceUrl" class="inline" style="word-break: break-all"></code></div>
-    </div>
-
-    <div class="footer">Si algún video no permite <em>embed</em>, usa “Abrir en su app”.</div>
+    <div class="footer">Hecho con ❤️ para Olga &amp; Oriol.</div>
   </main>
 
   <script>
-  // === 1) Pega aquí tus enlaces (YouTube / TikTok) ===
-  const LINKS = [
-    "https://www.youtube.com/shorts/WJrTD-hvzqk",
-    "https://www.youtube.com/watch?v=cDvBwePeebA",
-    "https://www.youtube.com/watch?v=PPzIWFJU_3s&list=RDPPzIWFJU_3s&start_radio=1",
-    "https://www.youtube.com/watch?v=0NDy6Rlijzo&list=RD0NDy6Rlijzo&start_radio=1",
-    "https://www.youtube.com/shorts/BZcI5B5_YXE",
-    "https://www.tiktok.com/@fada20252/video/7516020328758381854?_r=1&_t=ZN-8zLTWsrPJV0",
-    "https://www.youtube.com/shorts/Nu2nIX-Rm4k",
-    "https://www.tiktok.com/@jabez.elim/video/7501004773706059014?lang=en&utm_source=chatgpt.com",
-    "https://www.tiktok.com/@_ki_be_/video/7417195969202097414",
-    "https://www.tiktok.com/@viralgreenscreenhub/video/7541201896577453334?lang=en&utm_source=chatgpt.com",
-    "https://www.tiktok.com/@realnatureplanet/video/7290261136283323690?lang=en&utm_source=chatgpt.com",
-    "https://www.youtube.com/watch?v=H8-uYAVhaCs&list=PLHxODKxNtwmGmX1OjiUKv6jxF0T8RT-o6&index=20",
-    "https://www.youtube.com/watch?v=BK7hGo_u70E&list=PLHxODKxNtwmGmX1OjiUKv6jxF0T8RT-o6&index=25",
-    "https://www.youtube.com/watch?v=uUxChessSEY&list=PLHxODKxNtwmGmX1OjiUKv6jxF0T8RT-o6&index=33",
-    "https://www.youtube.com/watch?v=U60oGYWZ92U&list=PLHxODKxNtwmGmX1OjiUKv6jxF0T8RT-o6&index=42",
-    "https://www.youtube.com/watch?v=ZBJqnZy4qks&list=PLHxODKxNtwmGmX1OjiUKv6jxF0T8RT-o6&index=43",
-    "https://www.youtube.com/watch?v=UbiShEn5_iA&list=PLHxODKxNtwmGmX1OjiUKv6jxF0T8RT-o6&index=47",
-    "https://www.youtube.com/watch?v=qdbjNJkqSxQ&list=PLHxODKxNtwmGmX1OjiUKv6jxF0T8RT-o6&index=59",
-    "https://www.youtube.com/watch?v=ADsSVaCG5C8&list=PLHxODKxNtwmGmX1OjiUKv6jxF0T8RT-o6&index=68",
-    "https://www.youtube.com/watch?v=l-RJap7NDVs&list=PLHxODKxNtwmGmX1OjiUKv6jxF0T8RT-o6&index=72",
-    "https://www.youtube.com/watch?v=Ltc-voYup4U&list=PLHxODKxNtwmGmX1OjiUKv6jxF0T8RT-o6&index=77"
-  ];
+    // === Escenas con mapeo a imagen (nombres a subir) ===
+    const SCENES = [
+      { text: "Los padres de Uri pillan a Uri y a la secretaria en el despacho de abogados.",
+        img: "padres-pillan-despacho.png",
+        alt: "Padres sorprendidos en el despacho; Uri y la secretaria (con gafas) dentro." },
+      { text: "La secretaria le pide a Uri que vuelva con ella y Olga se interpone.",
+        img: "secretaria-pide-olga-interpone.png",
+        alt: "Escena en la calle: la secretaria suplica, Olga bloquea a Uri." },
+      { text: "El grupo salva las fiestas de Fontsagrada y se vuelve leyenda.",
+        img: "grupo-salva-fontsagrada.png",
+        alt: "Fiestas de Fontsagrada, ambiente festivo del grupo." },
+      { text: "Olga recibe un sacacorchos como regalo en un restaurante, pero piensa que es un consolador.",
+        img: "olga-sacacorchos-restaurante.png",
+        alt: "Olga abre una caja de sacacorchos en el restaurante, Uri observa." },
+      { text: "La vecina coreana de Uri se ríe al descubrir que no son madre e hijo.",
+        img: "vecina-coreana-rie.png",
+        alt: "Vecina riéndose al aclararse el malentendido." },
+      { text: "Uri limpia la casa rural de espíritus malignos (Tenim pipi).",
+        img: "uri-limpia-casa-rural.png",
+        alt: "Uri espantando espíritus en una casa rural." },
+      { text: "María, Uri y Kevin entran al cuarto oscuro de Arena.",
+        img: "maria-uri-kevin-cuarto-oscuro.png",
+        alt: "Entrada al cuarto oscuro de Arena." }
+    ];
 
-  // === 2) Utilidades ===
-  const $ = sel => document.querySelector(sel);
-  const player = $("#player");
-  const btnShuffle = $("#shuffle");
-  const linkOpen = $("#openOriginal");
-  const btnCopy = $("#copyLink");
-  const meta = $("#meta");
-  const sourceHost = $("#sourceHost");
-  const sourceUrl = $("#sourceUrl");
-  let lastIndex = -1;
-  // Intentar cargar el logo desde varios nombres comunes
+    const elText = document.getElementById("sceneText");
+    const elImg = document.getElementById("sceneImg");
+    const elCounter = document.getElementById("counter");
+    const btnNext = document.getElementById("btnNext");
+    const btnRestart = document.getElementById("btnRestart");
+    const btnCopy = document.getElementById("btnCopy");
 
-  function randIndex() {
-    if (LINKS.length <= 1) return 0;
-    let i;
-    do { i = Math.floor(Math.random() * LINKS.length) } while (i === lastIndex);
-    lastIndex = i;
-    return i;
-  }
+    let queue = [];
+    let shownThisRound = 0;
 
-  function parseProvider(raw) {
-    try {
-      const url = new URL(raw);
-      const host = url.hostname.replace(/^www\./, "");
-      if (host.includes("tiktok.com")) {
-        // Expect path like /@user/video/1234567890
-        const m = url.pathname.match(/\/video\/(\d+)/);
-        const id = m ? m[1] : null;
-        return { provider: "tiktok", id, url: raw, host };
+    function shuffleInPlace(arr){
+      for(let i = arr.length - 1; i > 0; i--){
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
       }
-      if (host.includes("youtube.com") || host === "youtu.be") {
-        let id = null;
-        if (url.pathname.startsWith("/shorts/")) {
-          id = url.pathname.split("/")[2] || null;
-        } else if (host === "youtu.be") {
-          id = url.pathname.slice(1) || null;
-        } else {
-          id = url.searchParams.get("v");
-        }
-        return { provider: "youtube", id, url: raw, host };
+      return arr;
+    }
+
+    function startNewRound(){
+      queue = shuffleInPlace([...SCENES.keys()]);
+      shownThisRound = 0;
+      updateHud();
+    }
+
+    function updateHud(){
+      elCounter.textContent = `${shownThisRound} / ${SCENES.length}`;
+    }
+
+    function setScene(scene){
+      for (const el of [elText, elImg]) { el.classList.remove('fade'); void el.offsetWidth; }
+
+      elText.textContent = scene.text;
+      elImg.alt = scene.alt || scene.text;
+
+      elImg.onerror = () => { elImg.style.display = 'none'; };
+      elImg.onload = () => { elImg.style.display = 'block'; };
+      elImg.src = scene.img;
+
+      elText.classList.add('fade');
+      elImg.classList.add('fade');
+    }
+
+    function showNext(){
+      if(queue.length === 0){
+        startNewRound();
       }
-      return { provider: "link", id: null, url: raw, host };
-    } catch (e) {
-      return { provider: "link", id: null, url: raw, host: "url inválida" };
-    }
-  }
-
-  function clearPlayer() {
-    player.innerHTML = "";
-  }
-
-  function renderYouTube(id) {
-    const embed = document.createElement("iframe");
-    embed.setAttribute("allowfullscreen", "");
-    embed.setAttribute("loading", "lazy");
-    embed.setAttribute("referrerpolicy", "strict-origin-when-cross-origin");
-    embed.width = "100%"; embed.height = "100%";
-    embed.src = `https://www.youtube.com/embed/${id}?rel=0&modestbranding=1`;
-    player.appendChild(embed);
-  }
-
-  function renderTikTok(id, originalUrl) {
-    // En lugar de embeber, informamos que debe abrirse en su app
-    const msg = document.createElement("div");
-    msg.className = "muted small";
-    msg.style.textAlign = "center";
-    msg.style.padding = "12px";
-    msg.innerHTML = `Este video de TikTok no permite <em>embed</em>.<br/><a href="${originalUrl}" target="_blank" rel="noopener">Ábrelo en su app</a>.`;
-    player.appendChild(msg);
-  }
-
-  function showMeta(info) {
-    linkOpen.hidden = false;
-    linkOpen.href = info.url;
-    btnCopy.hidden = false;
-    meta.hidden = false;
-    sourceHost.textContent = info.host;
-    sourceUrl.textContent = info.url;
-  }
-
-  function pickRandom() {
-    player.setAttribute("aria-busy", "true");
-    clearPlayer();
-    const raw = LINKS[randIndex()];
-    const info = parseProvider(raw);
-
-    if (info.provider === "youtube" && info.id) {
-      renderYouTube(info.id);
-      showMeta(info);
-    } else if (info.provider === "tiktok" && info.id) {
-      renderTikTok(info.id, info.url);
-      showMeta(info);
-    } else {
-      // Fallback: no compatible embed
-      const msg = document.createElement("div");
-      msg.className = "muted";
-      msg.innerHTML = `No puedo embeber este enlace. <a href="${info.url}" target="_blank" rel="noopener">Ábrelo aquí</a>.`;
-      player.appendChild(msg);
-      showMeta(info);
+      const idx = queue.shift();
+      const scene = SCENES[idx];
+      shownThisRound += 1;
+      updateHud();
+      setScene(scene);
     }
 
-    player.removeAttribute("aria-busy");
-  }
-
-  btnShuffle.addEventListener("click", pickRandom);
-
-  btnCopy.addEventListener("click", async () => {
-    const url = linkOpen.href;
-    try {
-      await navigator.clipboard.writeText(url);
-      btnCopy.textContent = "¡Copiado!";
-      setTimeout(() => (btnCopy.textContent = "Copiar enlace"), 1200);
-    } catch {
-      // Fallback
-      alert("Copia manual: " + url);
+    function restart(){
+      startNewRound();
+      showNext();
     }
-  });
 
-  // Auto-inicio: selecciona uno al cargar
-  // pickRandom(); // -> descomentarlo si quieres cargar uno automáticamente
+    btnNext.addEventListener("click", showNext);
+    btnRestart.addEventListener("click", restart);
+    btnCopy.addEventListener("click", async () => {
+      try{
+        await navigator.clipboard.writeText(elText.textContent || "");
+        btnCopy.textContent = "¡Copiado!";
+        setTimeout(()=> btnCopy.textContent = "Copiar escena", 1200);
+      }catch{
+        alert("Copia manual: " + (elText.textContent || ""));
+      }
+    });
+
+    // Pre-carga imágenes
+    (function preload(){
+      SCENES.forEach(s => { const im = new Image(); im.src = s.img; });
+    })();
+
+    startNewRound();
+    showNext();
   </script>
 </body>
 </html>
