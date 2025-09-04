@@ -306,12 +306,7 @@ h1 { font-weight: 700; letter-spacing: -0.01em; font-size: clamp(20px, 2.2vw, 24
     }
 
     btnNext.addEventListener("click", showNext);
-    btnRestart.addEventListener("click", restart);btnCopy.textContent = "¡Copiado!";
-        setTimeout(()=> btnCopy.textContent = "Copiar escena", 1200);
-      }catch{
-        alert("Copia manual: " + (elText.textContent || ""));
-      }
-    });
+    btnRestart.addEventListener("click", restart);
 
     (function preload(){
       SCENES.forEach(s => { const im = new Image(); im.src = s.img; });
