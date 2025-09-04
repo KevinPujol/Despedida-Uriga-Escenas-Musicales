@@ -10,7 +10,7 @@
       --bg:#f6f3f2;
       --panel:#ffffff;
       --accent:#6f836f;
-      --text:#2a1e1a; /* más oscuro para mejor contraste */
+      --text:#2a1e1a;
       --muted:#b6a9a4;
       --border:#e7e1df;
     }
@@ -37,7 +37,7 @@
       box-shadow:0 10px 30px rgba(0,0,0,.08);
       padding:18px;
     }
-    /* CABECERA: logo centrado + topbar con título a la izquierda y botón a la derecha */
+    /* CABECERA */
     .head{ display:grid; justify-items:center; gap:6px; padding:12px 6px 16px }
     .brand{ display:grid; justify-items:center; gap:8px }
     .brand img{ height:clamp(72px, 12vw, 160px); width:auto; display:block; object-fit:contain }
@@ -45,7 +45,6 @@
     .topbar .left{ display:grid; gap:2px; max-width:75% }
     .topbar .right{ display:flex; align-items:center }
     h1{ color:var(--accent); font-size:clamp(1.2rem, 2.2vw + .6rem, 1.8rem); margin:0; letter-spacing:.2px }
-    .muted{ color:var(--muted); font-size:.95rem }
     /* CONTENIDO */
     .scene{
       position:relative;
@@ -59,10 +58,10 @@
     }
     .scene p{
       margin:0;
-      font-size:clamp(1.3rem, 1.1rem + 1.4vw, 2.1rem); /* más grande */
+      font-size:clamp(1.3rem, 1.1rem + 1.4vw, 2.1rem);
       line-height:1.45;
       letter-spacing:.2px;
-      color:var(--text); /* más oscuro */
+      color:var(--text);
       font-weight:600;
     }
     .controls{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-top:14px }
@@ -86,12 +85,12 @@
   <main class="card">
     <div class="head">
       <div class="brand">
-        <img src="logo.jpg" alt="Olga &amp; Oriol – 04.10.2025" onerror="this.style.display='none'">
+        <!-- Intentamos cargar logo.png y, si falla, caemos a logo.jpg -->
+        <img src="logo.png" alt="Olga &amp; Oriol – 04.10.2025" onerror="this.onerror=null; this.src='logo.jpg'">
       </div>
       <div class="topbar">
         <div class="left">
           <h1>Escenas aleatorias</h1>
-          <!-- Subtítulo eliminado según petición -->
         </div>
         <div class="right">
           <button id="btnNext" class="primary" title="Mostrar otra escena">🔀 Otra escena</button>
@@ -108,7 +107,6 @@
       <button id="btnCopy" class="secondary" title="Copiar escena">Copiar escena</button>
       <div class="progress">
         <div class="pill" id="counter">0 / 7</div>
-        <!-- Texto de ciclo eliminado -->
       </div>
     </div>
 
@@ -133,8 +131,8 @@
     const btnRestart = document.getElementById("btnRestart");
     const btnCopy = document.getElementById("btnCopy");
 
-    let queue = [];          // cola de índices barajados
-    let shownThisRound = 0;  // cuántas se han mostrado en el ciclo actual
+    let queue = [];
+    let shownThisRound = 0;
 
     function shuffleInPlace(arr){
       for(let i = arr.length - 1; i > 0; i--){
@@ -163,10 +161,10 @@
       shownThisRound += 1;
       updateHud();
       elText.classList.remove("fade");
-      void elText.offsetWidth; // reinicia animación
+      void elText.offsetWidth;
       elText.textContent = text;
       elText.classList.add("fade");
-      elText.classList.remove("muted"); // asegura color más oscuro tras empezar
+      elText.classList.remove("muted");
     }
 
     function restart(){
@@ -186,7 +184,6 @@
       }
     });
 
-    // Autoarranque
     startNewRound();
     showNext();
   </script>
