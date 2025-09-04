@@ -63,20 +63,17 @@
       font-weight:700;
       text-align:center;
     }
-    .scene-media{ display:flex; align-items:center; justify-content:center; }
+    .scene-media{ display:grid; place-items:center; }
     .scene-media img{
-  display:block;
-  margin: 0 auto;
-  max-width: 100%;
-  height: auto;
-  max-height: 66vh;
-  object-fit: contain;
-  object-position: center;
-  border-radius: 12px;
-  border: 1px solid var(--border);
-  box-shadow: 0 8px 18px rgba(0,0,0,.06);
-  background: #fff;
-}
+      width:100%;
+      height:auto;
+      border-radius:12px;
+      border:1px solid var(--border);
+      box-shadow:0 8px 18px rgba(0,0,0,.06);
+      max-height:66vh;
+      object-fit:contain;
+      background:#fff;
+    }
 
     .controls{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-top:14px }
     button{
@@ -132,19 +129,18 @@ h1 { font-weight: 700; letter-spacing: -0.01em; font-size: clamp(20px, 2.2vw, 24
 }
 
 /* Media frame: stable ratio and height */
-.scene-media{ display:flex; align-items:center; justify-content:center; }
-.scene-media img{
-  display:block;
-  margin: 0 auto;
-  max-width: 100%;
-  height: auto;
-  max-height: 66vh;
+.scene-media {
+  aspect-ratio: 3 / 4;
+  max-height: min(70vh, 820px);
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+}
+.scene-media img {
+  width: 100%;
+  height: 100%;
   object-fit: contain;
-  object-position: center;
-  border-radius: 12px;
-  border: 1px solid var(--border);
-  box-shadow: 0 8px 18px rgba(0,0,0,.06);
-  background: #fff;
+  image-rendering: auto;
 }
 
 /* Controls layout + sticky action bar on mobile */
@@ -218,7 +214,7 @@ h1 { font-weight: 700; letter-spacing: -0.01em; font-size: clamp(20px, 2.2vw, 24
       </div>
     </section>
 
-    <div class="controls"><button id="btnRestart" class="secondary" title="Reiniciar ciclo">Reiniciar ciclo</button><button id="btnCopy" class="secondary" title="Copiar escena">Copiar escena</button><div class="progress"><div class="bar"><span id="progressFill" class="fill" style="--p:0%"></span></div><div class="pill" id="counter">0 / 7</div></div></div>
+    <div class="controls"><button id="btnRestart" class="secondary" title="Reiniciar ciclo">Reiniciar ciclo</button><div class="progress"><div class="bar"><span id="progressFill" class="fill" style="--p:0%"></span></div><div class="pill" id="counter">0 / 7</div></div></div>
 
     <div class="footer"><div class="love">Hecho con ❤️ para Olga &amp; Oriol.</div></div>
   </main>
@@ -253,10 +249,7 @@ h1 { font-weight: 700; letter-spacing: -0.01em; font-size: clamp(20px, 2.2vw, 24
     const elCounter = document.getElementById("counter");
     const btnNext = document.getElementById("btnNext");
     const elProgressFill = document.getElementById("progressFill");
-    const btnRestart = document.getElementById("btnRestart");
-    const btnCopy = document.getElementById("btnCopy");
-
-    let queue = [];
+    const btnRestart = document.getElementById("btnRestart");let queue = [];
     let shownThisRound = 0;
 
     function shuffleInPlace(arr){
@@ -313,11 +306,7 @@ h1 { font-weight: 700; letter-spacing: -0.01em; font-size: clamp(20px, 2.2vw, 24
     }
 
     btnNext.addEventListener("click", showNext);
-    btnRestart.addEventListener("click", restart);
-    btnCopy.addEventListener("click", async () => {
-      try{
-        await navigator.clipboard.writeText(elText.textContent || "");
-        btnCopy.textContent = "¡Copiado!";
+    btnRestart.addEventListener("click", restart);btnCopy.textContent = "¡Copiado!";
         setTimeout(()=> btnCopy.textContent = "Copiar escena", 1200);
       }catch{
         alert("Copia manual: " + (elText.textContent || ""));
