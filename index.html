@@ -63,17 +63,20 @@
       font-weight:700;
       text-align:center;
     }
-    .scene-media{ display:grid; place-items:center; }
+    .scene-media{ display:flex; justify-content:center; align-items:center; width:100%; }
     .scene-media img{
-      width:100%;
-      height:auto;
-      border-radius:12px;
-      border:1px solid var(--border);
-      box-shadow:0 8px 18px rgba(0,0,0,.06);
-      max-height:66vh;
-      object-fit:contain;
-      background:#fff;
-    }
+  display:block;
+  margin:0 auto;
+  width:auto;
+  max-width:100%;
+  height:auto;            /* natural height */
+  object-fit: contain;
+  object-position: center;
+  border-radius:12px;
+  border:1px solid var(--border);
+  box-shadow:0 8px 18px rgba(0,0,0,.06);
+  background:#fff;
+}
 
     .controls{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-top:14px }
     button{
@@ -129,18 +132,19 @@ h1 { font-weight: 700; letter-spacing: -0.01em; font-size: clamp(20px, 2.2vw, 24
 }
 
 /* Media frame: stable ratio and height */
-.scene-media {
-  aspect-ratio: 3 / 4;
-  max-height: min(70vh, 820px);
-  overflow: hidden;
-  display: grid;
-  place-items: center;
-}
-.scene-media img {
-  width: 100%;
-  height: 100%;
+.scene-media{ display:flex; justify-content:center; align-items:center; width:100%; }
+.scene-media img{
+  display:block;
+  margin:0 auto;
+  width:auto;
+  max-width:100%;
+  height:auto;            /* natural height */
   object-fit: contain;
-  image-rendering: auto;
+  object-position: center;
+  border-radius:12px;
+  border:1px solid var(--border);
+  box-shadow:0 8px 18px rgba(0,0,0,.06);
+  background:#fff;
 }
 
 /* Controls layout + sticky action bar on mobile */
