@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Olga &amp; Oriol — Escenas aleatorias</title>
+  <meta name="description" content="Muestra escenas en orden aleatorio sin repetir por ciclo. Al terminar, se barajan de nuevo automáticamente." />
+  <style>
+    :root{
+      --bg:#f6f3f2;
+      --panel:#ffffff;
+      --accent:#6f836f;
+      --text:#43312c;
+      --muted:#b6a9a4;
+      --border:#e7e1df;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+      background:
+        radial-gradient(1000px 700px at 80% -20%, #f0ebe9 0%, transparent 60%),
+        radial-gradient(800px 600px at -10% 10%, #efe9e6 0%, transparent 60%),
+        var(--bg);
+      color:var(--text);
+      display:grid;
+      place-items:center;
+      padding:24px;
+    }
+    .card{
+      width:min(960px, 100%);
+      background: color-mix(in oklab, var(--panel) 86%, #faf6f4 14%);
+      backdrop-filter: blur(6px) saturate(120%);
+      border:1px solid var(--border);
+      border-radius:20px;
+      box-shadow:0 10px 30px rgba(0,0,0,.08);
+      padding:18px;
+    }
+    /* ======= CABECERA (como la web de referencia): logo centrado + topbar con títulos a la izquierda y botón a la derecha ======= */
+    .head{ display:grid; justify-items:center; gap:6px; padding:12px 6px 16px }
+    .brand{ display:grid; justify-items:center; gap:8px }
+    .brand img{ height:clamp(72px, 12vw, 160px); width:auto; display:block; object-fit:contain }
+    .topbar{ display:flex; justify-content:space-between; align-items:center; width:100%; gap:12px; flex-wrap:wrap }
+    .topbar .left{ display:grid; gap:4px; max-width:75% }
+    .topbar .right{ display:flex; align-items:center }
+    h1{ color:var(--accent); font-size:clamp(1.2rem, 2.2vw + .6rem, 1.8rem); margin:0; letter-spacing:.2px }
+    .muted{ color:var(--muted); font-size:.95rem }
+    /* ======= CONTENIDO ======= */
+    .scene{
+      position:relative;
+      margin-top:8px;
+      border:1px solid var(--border);
+      border-radius:14px;
+      background:#f7f2f0;
+      padding:22px;
+      min-height:140px;
+      display:grid;place-items:center;text-align:center;
+    }
+    .scene p{
+      margin:0;
+      font-size:clamp(1.05rem, 1rem + .9vw, 1.6rem);
+      line-height:1.45;
+      letter-spacing:.2px;
+    }
+    .controls{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-top:14px }
+    button, a.button{
+      --pad:12px 16px;
+      appearance:none; border:0; padding:var(--pad); border-radius:12px; cursor:pointer;
+      font-weight:600; letter-spacing:.2px; text-decoration:none; display:inline-flex; align-items:center; gap:.55rem;
+    }
+    .primary{ background:var(--accent); color:#fff }
+    .secondary{ background:#fff; color:var(--text); border:1px solid var(--border); box-shadow:0 1px 2px rgba(0,0,0,.06) }
+    .secondary:hover{ border-color: color-mix(in oklab, var(--border) 40%, var(--text) 60%); box-shadow:0 2px 6px rgba(0,0,0,.08); transform: translateY(-1px) }
+    .primary:hover{ filter:brightness(1.05) }
+    .progress{ display:flex; gap:8px; align-items:center; margin-top:8px; color:var(--muted); font-size:.95rem }
+    .pill{ border:1px solid var(--border); padding:6px 10px; border-radius:999px; background:#fff }
+    .footer{ margin-top:12px; color:#8e837f; font-size:.85rem; text-align:center }
+    .fade{ animation:fade .28s ease-out both }
+    @keyframes fade{ from{ opacity:.2; transform: translateY(4px) } to { opacity:1; transform:none } }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <div class="head">
+      <div class="brand">
+        <img src="logo.jpg" alt="Olga &amp; Oriol – 04.10.2025" onerror="this.style.display='none'">
+      </div>
+      <div class="topbar">
+        <div class="left">
+          <h1>Escenas aleatorias</h1>
+          <div class="muted">Sin repetir por ciclo. Al completar todas, se barajan y empieza un nuevo ciclo.</div>
+        </div>
+        <div class="right">
+          <button id="btnNext" class="primary" title="Mostrar otra escena">🔀 Otra escena</button>
+        </div>
+      </div>
+    </div>
+
+    <section class="scene" aria-live="polite">
+      <p id="sceneText" class="muted">Pulsa <strong>Otra escena</strong> para empezar 🔀</p>
+    </section>
+
+    <div class="controls">
+      <button id="btnRestart" class="secondary" title="Reiniciar ciclo">Reiniciar ciclo</button>
+      <button id="btnCopy" class="secondary" title="Copiar escena">Copiar escena</button>
+      <div class="progress">
+        <div class="pill" id="counter">0 / 7</div>
+        <div id="round">Ciclo 0</div>
+      </div>
+    </div>
+
+    <div class="footer">Hecho con ❤️ para Olga &amp; Oriol.</div>
+  </main>
+
+  <script>
+    // === Escenas ===
+    const SCENES = [
+      "Los padres de Uri pillan a Uri y a la secretaria en el despacho de abogados.",
+      "La secretaria le pide a Uri que vuelva con ella y Olga se interpone.",
+      "El grupo salva las fiestas de Fontsagrada y se vuelve leyenda.",
+      "Olga recibe un sacacorchos como regalo en un restaurante, pero piensa que es un consolador.",
+      "La vecina coreana de Uri se ríe al descubrir que no son madre e hijo.",
+      "Uri limpia la casa rural de espíritus malignos (Tenim pipi).",
+      "María, Uri y Kevin entran al cuarto oscuro de Arena."
+    ];
+
+    const elText = document.getElementById("sceneText");
+    const elCounter = document.getElementById("counter");
+    const elRound = document.getElementById("round");
+    const btnNext = document.getElementById("btnNext");
+    const btnRestart = document.getElementById("btnRestart");
+    const btnCopy = document.getElementById("btnCopy");
+
+    let queue = [];          // cola de índices barajados
+    let round = 0;           // número de ciclo
+    let shownThisRound = 0;  // cuántas se han mostrado en el ciclo actual
+
+    function shuffleInPlace(arr){
+      for(let i = arr.length - 1; i > 0; i--){
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    function startNewRound(){
+      queue = shuffleInPlace([...SCENES.keys()]);
+      round += 1;
+      shownThisRound = 0;
+      updateHud();
+    }
+
+    function updateHud(){
+      elCounter.textContent = `${shownThisRound} / ${SCENES.length}`;
+      elRound.textContent = `Ciclo ${round}`;
+    }
+
+    function showNext(){
+      if(queue.length === 0){
+        startNewRound();
+      }
+      const idx = queue.shift();
+      const text = SCENES[idx];
+      shownThisRound += 1;
+      updateHud();
+      elText.classList.remove("fade");
+      void elText.offsetWidth; // reinicia animación
+      elText.textContent = text;
+      elText.classList.add("fade");
+    }
+
+    function restart(){
+      round = 0;
+      startNewRound();
+      showNext();
+    }
+
+    btnNext.addEventListener("click", showNext);
+    btnRestart.addEventListener("click", restart);
+    btnCopy.addEventListener("click", async () => {
+      try{
+        await navigator.clipboard.writeText(elText.textContent || "");
+        btnCopy.textContent = "¡Copiado!";
+        setTimeout(()=> btnCopy.textContent = "Copiar escena", 1200);
+      }catch{
+        alert("Copia manual: " + (elText.textContent || ""));
+      }
+    });
+
+    // Autoarranque
+    startNewRound();
+    showNext();
+  </script>
+</body>
+</html>
